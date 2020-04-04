@@ -71,6 +71,7 @@ while True: # main game loop
                 choice = game.get_action()
             
             game.current_client += 1
+            client = None
 
     print("Moving onto the next day...")
     time.sleep(3) # wait before moving onto the next day
