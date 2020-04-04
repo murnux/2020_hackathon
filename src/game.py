@@ -1,9 +1,9 @@
 # this handles some of the main game logic
-import os
+import os, sys
 
 class Game:
     def __init__(self):
-        self.day = 0
+        self.day = 1
         self.max_fails = 3 # number of times the wrong beer can be sold in a day before game over
 
     def draw_hud(self, player):
@@ -30,6 +30,7 @@ class Game:
 
     def over(self):
         self.clear_screen()
+        print("Oh no, the client wasn't happy with the order! They've gone crazy and awakened the below-world!")
         print('''
              ooO
                      ooOOOo
@@ -45,5 +46,6 @@ class Game:
 /  \   /           VVVVVVV   \  /\  -/-    /\
                     VVVVVVVVVVVVV   /\
         ''')
+        sys.exit()
 
     

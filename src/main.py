@@ -5,7 +5,7 @@ import clientele
 import beers
 
 # third-party module imports
-import sys
+import sys, time
 
 prompt = "Hello! Please enter your name: "
 name = raw_input(prompt)
@@ -24,6 +24,7 @@ game = game.Game()
 the_beers = beers.Beers()
 game.clear_screen()
 while True: # main game loop
+    game.clear_screen() # clears the screen for this day
     game.draw_hud(player)
     print("A new client enters the store...")
     client = clientele.Clientele()
@@ -39,6 +40,11 @@ while True: # main game loop
         elif choice == "1":
             the_beers.print_all_beers()
         elif choice == "2":
+            beer = raw_input("Type in the name of the beer to give: ")
+            successful = client.check_beer_given(beer, the_beers.all_beers) # check if the given beer works.
+            if not successful:
+                game.over()
+                sys.exit()
             done = True
         elif choice == "3":
             print("Exiting game.")
@@ -47,5 +53,6 @@ while True: # main game loop
         if not done:
             choice = game.get_action()
 
-    game.day += 1
-    #game.over()
+    print("Moving onto the next day...")
+    time.sleep(3) # wait 3 seconds before moving onto the next day
+    game.day += 1 # increment day number
