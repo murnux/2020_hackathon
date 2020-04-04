@@ -4,10 +4,13 @@ import os, sys
 class Game:
     def __init__(self):
         self.day = 1
-        self.max_fails = 3 # number of times the wrong beer can be sold in a day before game over
+        self.max_fails = 2 # number of times the wrong beer can be sold in a day before game over
+        self.num_fails = 0
+        self.num_clients = 5 # number of clients a day
+        self.current_client = 0
 
     def draw_hud(self, player):
-        print("It is day #{0}\n".format(self.day))
+        print("It is day #{0}\nClient Number: {1}/{2}\nNumber of Fails: {3}/{4}\n".format(self.day, self.current_client, self.num_clients, self.num_fails, self.max_fails))
         print("Name: {0}, Money: ${1:.2f}".format(player.name, player.money))
 
     # clears the screen to avoid displaying old game state

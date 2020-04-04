@@ -23,36 +23,58 @@ player = player.Player(name)
 game = game.Game()
 the_beers = beers.Beers()
 game.clear_screen()
+
 while True: # main game loop
     game.clear_screen() # clears the screen for this day
-    game.draw_hud(player)
-    print("A new client enters the store...")
-    client = clientele.Clientele()
-    client.order()
-    game.action_menu()
-    choice = game.get_action() # get action input from the player
 
-    done = False
-    while not done:
-        # Python doesn't have switch statements, sad days...
-        if choice == "help":
-            game.help()
-        elif choice == "1":
-            the_beers.print_all_beers()
-        elif choice == "2":
-            beer = raw_input("Type in the name of the beer to give: ")
-            successful = client.check_beer_given(beer, the_beers.all_beers) # check if the given beer works.
-            if not successful:
-                game.over()
-                sys.exit()
-            done = True
-        elif choice == "3":
-            print("Exiting game.")
-            sys.exit() # exit with 0 return code
-        print("") # print a new line
-        if not done:
-            choice = game.get_action()
+    while game.current_client <= game.num_clients: # loop to keep introducing clients until the day is over
+        game.clear_screen()
+        print("A new client enters the store...")
+        time.sleep(2)
+        game.draw_hud(player)
+        client = clientele.Clientele()
+        client.order()
+        print("")
+        game.action_menu()
+        choice = game.get_action() # get action input from the player
+
+        done = False
+        while not done:
+            # Python doesn't have switch statements, sad days...
+            if choice == "help":
+                game.help()
+            elif choice == "1": # lists all beers
+                the_beers.print_all_beers()
+            elif choice == "2": # handle logic of giving a beer to the client
+                beer = raw_input("Type in the name of the beer to give: ")
+                while beer not in the_beers.all_beers:
+                    print("\nThat beer does not exist, please try again.")
+                    beer = raw_input("Type in the name of the beer to give: ")
+
+                cost_to_make = the_beers.all_beers[beer][3] # how much it takes to produce this beer
+                purchase_price = the_beers.all_beers[beer][4] # number the client pays on a successful purchase
+                player.money -= cost_to_make # subtract the amount it took to produce this beer
+                successful = client.check_beer_given(beer, the_beers.all_beers) # check if the given beer works.
+                time.sleep(4)
+                if not successful:
+                    game.num_fails += 1
+                    if game.num_fails >= game.max_fails: # if this is true, the number of fails has been exceeded and the game must end
+                        game.over()
+                else:
+                    player.money += purchase_price
+                done = True
+            elif choice == "3": # exits the game
+                print("Exiting game.")
+                sys.exit() # exit with 0 return code
+            print("") # print a new line
+            if not done:
+                choice = game.get_action()
+            
+            game.current_client += 1
 
     print("Moving onto the next day...")
-    time.sleep(3) # wait 3 seconds before moving onto the next day
+    time.sleep(3) # wait before moving onto the next day
+    # reset some of the game object values
+    game.current_client = 0
+    game.num_fails = 0
     game.day += 1 # increment day number
